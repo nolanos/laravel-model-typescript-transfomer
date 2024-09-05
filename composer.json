@@ -1,18 +1,37 @@
 {
-    "name": "ncphillips/laravel-model-typescript-transfomer",
-    "description": "Generate Typescript definitions for your Eloquent models",
-    "type": "library",
-    "license": "MIT License",
-    "autoload": {
-        "psr-4": {
-            "Ncphillips\\LaravelModelTypescriptTransfomer\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "nolan",
-            "email": "hello@nolanphillips.com"
-        }
-    ],
-    "require": {}
+  "name": "nolanos/laravel-model-typescript-transfomer",
+  "description": "Generate Typescript definitions for your Eloquent models",
+  "version": "0.0.0",
+  "type": "library",
+  "homepage": "https://github.com/nolanos/laravel-model-typescript-transfomer",
+  "license": "MIT",
+  "keywords": [
+    "laravel",
+    "typescript",
+    "eloquent"
+  ],
+  "authors": [
+    {
+      "name": "Nolan Phillips",
+      "email": "hello@nolanphillips.com",
+      "role": "Developer",
+      "homepage": "https://nolanphillips.com"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/nolanos/laravel-model-typescript-transformer",
+    "issues": "https://github.com/nolanos/laravel-model-typescript-transformer/issues"
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/ncphillips"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Nolanos\\LaravelModelTypescriptTransfomer\\": "src/"
+    }
+  }
 }
