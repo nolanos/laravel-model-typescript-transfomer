@@ -29,7 +29,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Nolanos\\LaravelModelTypescriptTransformer\\": "gsrc/"
+            "Nolanos\\LaravelModelTypescriptTransformer\\": "src/"
         }
     },
     "autoload-dev": {
@@ -41,7 +41,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/pest",
+        "test": "@php vendor/bin/pest",
         "post-autoload-dump": [
             "@clear",
             "@prepare"
