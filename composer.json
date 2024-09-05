@@ -28,10 +28,19 @@
       "url": "https://github.com/sponsors/ncphillips"
     }
   ],
-  "require": {},
   "autoload": {
     "psr-4": {
       "Nolanos\\LaravelModelTypescriptTransfomer\\": "src/"
+    }
+  },
+  "require-dev": {
+    "mockery/mockery": "^1.6",
+    "pestphp/pest": "^2.35"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
     }
   }
 }
