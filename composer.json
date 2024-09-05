@@ -1,46 +1,78 @@
 {
-  "name": "nolanos/laravel-model-typescript-transfomer",
-  "description": "Generate Typescript definitions for your Eloquent models",
-  "version": "0.0.0",
-  "type": "library",
-  "homepage": "https://github.com/nolanos/laravel-model-typescript-transfomer",
-  "license": "MIT",
-  "keywords": [
-    "laravel",
-    "typescript",
-    "eloquent"
-  ],
-  "authors": [
-    {
-      "name": "Nolan Phillips",
-      "email": "hello@nolanphillips.com",
-      "role": "Developer",
-      "homepage": "https://nolanphillips.com"
+    "name": "nolanos/laravel-model-typescript-transfomer",
+    "description": "Generate Typescript definitions for your Eloquent models",
+    "version": "0.0.0",
+    "type": "library",
+    "homepage": "https://github.com/nolanos/laravel-model-typescript-transfomer",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "typescript",
+        "eloquent"
+    ],
+    "authors": [
+        {
+            "name": "Nolan Phillips",
+            "email": "hello@nolanphillips.com",
+            "role": "Developer",
+            "homepage": "https://nolanphillips.com"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/nolanos/laravel-model-typescript-transformer",
+        "issues": "https://github.com/nolanos/laravel-model-typescript-transformer/issues"
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/ncphillips"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Nolanos\\LaravelModelTypescriptTransformer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
+        ],
+        "lint": [
+            "@php vendor/bin/phpstan analyse --verbose --ansi"
+        ]
+    },
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": "^9.0|^10.0|^11.0",
+        "spatie/laravel-typescript-transformer": "^2.4"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^9.4",
+        "pestphp/pest": "^2.35"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
-  ],
-  "support": {
-    "source": "https://github.com/nolanos/laravel-model-typescript-transformer",
-    "issues": "https://github.com/nolanos/laravel-model-typescript-transformer/issues"
-  },
-  "funding": [
-    {
-      "type": "github",
-      "url": "https://github.com/sponsors/ncphillips"
-    }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Nolanos\\LaravelModelTypescriptTransfomer\\": "src/"
-    }
-  },
-  "require-dev": {
-    "mockery/mockery": "^1.6",
-    "pestphp/pest": "^2.35"
-  },
-  "config": {
-    "sort-packages": true,
-    "allow-plugins": {
-      "pestphp/pest-plugin": true
-    }
-  }
 }
