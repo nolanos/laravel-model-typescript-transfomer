@@ -34,18 +34,6 @@ Generate TypeScript definitions by running:
 php artisan typescript:generate
 ```
 
-## Example Output
-
-For a `User` model, it will generate:
-
-```typescript
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-```
-
 ## How it works
 
 ### Identifying Properties
