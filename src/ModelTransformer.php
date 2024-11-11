@@ -12,7 +12,7 @@ class ModelTransformer implements Transformer
 {
     public function transform(ReflectionClass $class, string $name): TransformedType|null
     {
-        if (! is_subclass_of($class->name, Model::class)) {
+        if (!is_subclass_of($class->name, Model::class)) {
             return null;
         }
         /** @var Model $modelInstance */
@@ -24,7 +24,7 @@ class ModelTransformer implements Transformer
         $casts = $modelInstance->getCasts();
 
         $columns = Schema::getColumns($table);
-        $columnNames = array_map(fn ($col) => $col['name'], $columns);
+        $columnNames = array_map(fn($col) => $col['name'], $columns);
 
         $serializedColumnNames = array_diff($columnNames, $hidden);
 
@@ -33,10 +33,11 @@ class ModelTransformer implements Transformer
         foreach ($serializedColumnNames as $index => $propertyName) {
             $column = $columns[$index];
             $isNullable = $column['nullable'];
-            $typescriptType = $this->mapTypeNameToJsonType($column['type_name']);
 
             if (array_key_exists($propertyName, $casts)) {
-                // TODO: Get the typescript type for the $cast.
+                $typescriptType = $this->mapCastToType($casts[$propertyName]);
+            } else {
+                $typescriptType = $this->mapTypeNameToJsonType($column['type_name']);
             }
 
             $typescriptPropertyDefinition = "$propertyName: $typescriptType";
@@ -51,7 +52,7 @@ class ModelTransformer implements Transformer
         return TransformedType::create(
             $class,
             $name,
-            "{\n".implode("\n", $typescriptProperties)."\n}",
+            "{\n" . implode("\n", $typescriptProperties) . "\n}",
         );
     }
 
@@ -66,7 +67,19 @@ class ModelTransformer implements Transformer
             // Booleans
             'boolean', 'bool' => 'boolean',
             // Unknown
-            default => 'unknown /* '.$columnType.' */', // Fallback for other types
+            default => 'unknown /* ' . $columnType . ' */', // Fallback for other types
+        };
+    }
+
+    private function mapCastToType(string $cast): string
+    {
+        return match ($cast) {
+            'boolean' => 'boolean',
+            'int', 'float' => 'number',
+            'string', 'datetime', 'timestamp', 'date', 'uuid' => 'string',
+            'array', 'object' => 'any',
+            'collection' => 'any[]',
+            default => 'unknown /* ' . $cast . ' */',
         };
     }
 }

@@ -14,7 +14,8 @@ afterEach(function () {
 });
 
 test('returns null for non model', function () {
-    $non_model = new class {};
+    $non_model = new class {
+    };
     $transformer = new ModelTransformer;
     $reflectionClass = new \ReflectionClass($non_model::class);
     expect($transformer->transform($reflectionClass, $non_model::class))->toBeNull();
@@ -54,42 +55,75 @@ test('it maps types properly', function () {
 //        $table->boolean('a_boolean');
     });
 
-    $model = new class extends \Illuminate\Database\Eloquent\Model
-    {
+    $model = new class extends \Illuminate\Database\Eloquent\Model {
         protected $table = 'test_table';
     };
 
     $transformer = new ModelTransformer;
     $transformedType = $transformer->transform(new \ReflectionClass($model::class), $model::class);
 
-    $type_definition = "{\n".
+    $type_definition = "{\n" .
         // Numbers
-        "id: number\n".
-        "an_integer: number\n".
-        "a_big_integer: number\n".
-        "unsigned_big_integer: number\n".
-        "unsigned_integer: number\n".
-        "unsigned_medium_integer: number\n".
-        "unsigned_small_integer: number\n".
-        "unsigned_tiny_integer: number\n".
-        "a_double: number\n".
-        "a_decimal: number\n".
+        "id: number\n" .
+        "an_integer: number\n" .
+        "a_big_integer: number\n" .
+        "unsigned_big_integer: number\n" .
+        "unsigned_integer: number\n" .
+        "unsigned_medium_integer: number\n" .
+        "unsigned_small_integer: number\n" .
+        "unsigned_tiny_integer: number\n" .
+        "a_double: number\n" .
+        "a_decimal: number\n" .
         // String
-        "uuid: string\n".
-        "a_string: string\n".
-        "a_text: string\n".
-        "a_char: string\n".
-        "a_date: string\n".
-        "a_datetime: string\n".
-        "a_timestamp: string\n".
-        "created_at: string | null\n".
-        "updated_at: string | null\n".
-        "a_time: string\n".
-        "user_id: number\n".
-        "a_binary: string\n".
-        "an_enum: string\n".
+        "uuid: string\n" .
+        "a_string: string\n" .
+        "a_text: string\n" .
+        "a_char: string\n" .
+        "a_date: string\n" .
+        "a_datetime: string\n" .
+        "a_timestamp: string\n" .
+        "created_at: string | null\n" .
+        "updated_at: string | null\n" .
+        "a_time: string\n" .
+        "user_id: number\n" .
+        "a_binary: string\n" .
+        "an_enum: string\n" .
         // Boolean
 //        "a_boolean: boolean\n".
+        '}';
+
+    expect($transformedType?->transformed)->toEqual($type_definition);
+});
+
+test('it respects casts properly', function () {
+    if (Schema::hasTable('test_table')) {
+        Schema::drop('test_table');
+    }
+
+    Schema::create('test_table', function (Blueprint $table) {
+        $table->id();
+        $table->boolean('a_tiny_int'); //
+        $table->json('some_json');
+    });
+
+    $model = new class extends \Illuminate\Database\Eloquent\Model {
+        protected $table = 'test_table';
+        protected $casts = [
+            'a_tiny_int' => 'boolean',
+            'some_json' => 'array',
+        ];
+    };
+
+    $transformer = new ModelTransformer;
+    $transformedType = $transformer->transform(new \ReflectionClass($model::class), $model::class);
+
+    $type_definition = "{\n" .
+        // Numbers
+        "id: number\n" .
+        // Boolean
+        "a_tiny_int: boolean\n" .
+        // Array
+        "some_json: any\n" .
         '}';
 
     expect($transformedType?->transformed)->toEqual($type_definition);
