@@ -92,6 +92,10 @@ class ModelTransformer implements Transformer
 
     private function mapCastToType(string $cast): string
     {
+        if (enum_exists($cast)) {
+            return implode(' | ', array_map(fn($case) => "'$case->value'", $cast::cases()));
+        }
+
         return match ($cast) {
             'boolean', 'bool' => 'boolean',
             'int', 'float' => 'number',

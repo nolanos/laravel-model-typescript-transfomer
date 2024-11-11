@@ -130,6 +130,40 @@ test('it respects casts properly', function () {
     expect($transformedType?->transformed)->toEqual($type_definition);
 });
 
+test('inlines enum casts', function () {
+    if (Schema::hasTable('test_table')) {
+        Schema::drop('test_table');
+    }
+
+    enum EnumTest: string {
+       case A = 'a';
+       case B = 'b';
+       case C = 'c';
+    }
+
+    Schema::create('test_table', function (Blueprint $table) {
+        $table->id();
+        $table->text('enum_test');
+    });
+
+    $model = new class extends \Illuminate\Database\Eloquent\Model {
+        protected $table = 'test_table';
+        protected $casts = [
+            'enum_test' => EnumTest::class,
+        ];
+    };
+
+    $transformer = new ModelTransformer;
+    $transformedType = $transformer->transform(new \ReflectionClass($model::class), $model::class);
+
+    $type_definition = "{\n" .
+        "id: number\n" .
+        "enum_test: 'a' | 'b' | 'c'\n" . 
+        '}';
+
+    expect($transformedType?->transformed)->toEqual($type_definition);
+});
+
 
 test('it adds appended attributes', function () {
     if (Schema::hasTable('test_table')) {
