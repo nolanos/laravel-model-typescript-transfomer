@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Nolanos\LaravelModelTypescriptTransformer\ModelTransformer;
@@ -124,6 +125,38 @@ test('it respects casts properly', function () {
         "a_tiny_int: boolean\n" .
         // Array
         "some_json: any\n" .
+        '}';
+
+    expect($transformedType?->transformed)->toEqual($type_definition);
+});
+
+
+test('it adds appended attributes', function () {
+    if (Schema::hasTable('test_table')) {
+        Schema::drop('test_table');
+    }
+
+    Schema::create('test_table', function (Blueprint $table) {
+        $table->id();
+    });
+
+    $model = new class extends \Illuminate\Database\Eloquent\Model {
+        protected $table = 'test_table';
+        protected $appends = ['appended_attribute'];
+     
+        public function appendedAttribute()
+        {
+            new Attribute(get: fn() => 'some value');
+        }
+    };
+
+    $transformer = new ModelTransformer;
+    $transformedType = $transformer->transform(new \ReflectionClass($model::class), $model::class);
+
+    $type_definition = "{\n" .
+        // Numbers
+        "id: number\n" .
+        "appended_attribute: any\n" .
         '}';
 
     expect($transformedType?->transformed)->toEqual($type_definition);

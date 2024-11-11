@@ -22,6 +22,7 @@ class ModelTransformer implements Transformer
 
         $hidden = $modelInstance->getHidden();
         $casts = $modelInstance->getCasts();
+        $appends = $modelInstance->getAppends();
 
         $columns = Schema::getColumns($table);
         $columnNames = array_map(fn($col) => $col['name'], $columns);
@@ -47,6 +48,10 @@ class ModelTransformer implements Transformer
             }
 
             $typescriptProperties[] = $typescriptPropertyDefinition;
+        }
+
+        foreach ($appends as $append) {
+            $typescriptProperties[] = "$append: any";
         }
 
         return TransformedType::create(
