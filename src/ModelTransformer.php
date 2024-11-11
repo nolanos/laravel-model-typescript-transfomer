@@ -51,7 +51,19 @@ class ModelTransformer implements Transformer
         }
 
         foreach ($appends as $append) {
-            $typescriptProperties[] = "$append: any";
+            $type = 'any';
+            if ($comment = $class->getDocComment()) {
+                $matches = [];
+                $regex = '/@property\s+([^\s]+)\s+\$' . $append . '\s*\n/';
+
+                preg_match($regex, $comment, $matches);
+
+                if (count($matches) > 1) {
+                    $type = $this->mapCastToType($matches[1]);
+                }
+            }
+
+            $typescriptProperties[] = "$append: $type";
         }
 
         return TransformedType::create(

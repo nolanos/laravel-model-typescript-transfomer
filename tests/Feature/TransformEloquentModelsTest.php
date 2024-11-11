@@ -140,13 +140,37 @@ test('it adds appended attributes', function () {
         $table->id();
     });
 
+    /**
+     * @property string $appended_attribute_str
+     * @property int $appended_attribute_int
+     */
     $model = new class extends \Illuminate\Database\Eloquent\Model {
         protected $table = 'test_table';
-        protected $appends = ['appended_attribute'];
+        protected $appends = [
+            'appended_attribute',
+            'appended_attribute_str',
+            'appended_attribute_array',
+            'appended_attribute_int',
+        ];
      
         public function appendedAttribute()
         {
             new Attribute(get: fn() => 'some value');
+        }
+
+        public function appendedAttributeStr()
+        {
+            new Attribute(get: fn() => 'some value');
+        }
+
+        public function appendedAttributeArray()
+        {
+            new Attribute(get: fn() => []);
+        }
+
+        public function appendedAttributeInt()
+        {
+            new Attribute(get: fn() => 1);
         }
     };
 
@@ -157,6 +181,9 @@ test('it adds appended attributes', function () {
         // Numbers
         "id: number\n" .
         "appended_attribute: any\n" .
+        "appended_attribute_str: string\n" .
+        "appended_attribute_array: any\n" .
+        "appended_attribute_int: number\n" .
         '}';
 
     expect($transformedType?->transformed)->toEqual($type_definition);
