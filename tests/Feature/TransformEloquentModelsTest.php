@@ -143,6 +143,7 @@ test('it adds appended attributes', function () {
     /**
      * @property string $appended_attribute_str
      * @property int $appended_attribute_int
+     * @property bool $appended_attribute_bool
      */
     $model = new class extends \Illuminate\Database\Eloquent\Model {
         protected $table = 'test_table';
@@ -151,6 +152,7 @@ test('it adds appended attributes', function () {
             'appended_attribute_str',
             'appended_attribute_array',
             'appended_attribute_int',
+            'appended_attribute_bool',
         ];
      
         public function appendedAttribute()
@@ -172,6 +174,10 @@ test('it adds appended attributes', function () {
         {
             new Attribute(get: fn() => 1);
         }
+        public function appendedAttributeBool()
+        {
+            new Attribute(get: fn() => true);
+        }
     };
 
     $transformer = new ModelTransformer;
@@ -184,6 +190,7 @@ test('it adds appended attributes', function () {
         "appended_attribute_str: string\n" .
         "appended_attribute_array: any\n" .
         "appended_attribute_int: number\n" .
+        "appended_attribute_bool: boolean\n" .
         '}';
 
     expect($transformedType?->transformed)->toEqual($type_definition);

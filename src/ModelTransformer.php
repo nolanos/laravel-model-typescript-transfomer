@@ -58,6 +58,8 @@ class ModelTransformer implements Transformer
 
                 preg_match($regex, $comment, $matches);
 
+                // dump($comment, $append, $regex, $matches);
+
                 if (count($matches) > 1) {
                     $type = $this->mapCastToType($matches[1]);
                 }
@@ -91,7 +93,7 @@ class ModelTransformer implements Transformer
     private function mapCastToType(string $cast): string
     {
         return match ($cast) {
-            'boolean' => 'boolean',
+            'boolean', 'bool' => 'boolean',
             'int', 'float' => 'number',
             'string', 'datetime', 'timestamp', 'date', 'uuid' => 'string',
             'array', 'object' => 'any',
